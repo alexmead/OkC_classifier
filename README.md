@@ -21,9 +21,9 @@ to the remote repo.
 
 Notes:
 1) All code uses Python version 3.10.8
-2) This is a demo-project, all code is free to use in anyway, see license. 
-3) This is a "rough and dirty" project, many other aspects must be considered
-    when builing in production environments or on teams to foster team
+2) This is a demo-project, all code is free to use in anyway, see MIT license. 
+3) This is a "rough and dirty" project. Many other aspects must be considered
+    when building in production environments or on teams to foster team
     producitively (e.g. linting, proper comments).
 
 
