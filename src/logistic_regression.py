@@ -4,14 +4,13 @@ Date: August 2024
 
 Description:
 Walks through the Logistic Regression approach to the
-gender prediction question. Please find an accompying
+gender prediction question. Please find an accompanying
 blog post on my Substack at:
-            
+
 
 """
 
 import pandas as pd
-
 
 ##################################################################
 # Load the dataset
