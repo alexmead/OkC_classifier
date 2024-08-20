@@ -17,8 +17,12 @@ file and you will get a CSV named okcupid_profiles.csv. Put the archive.zip and
 okcupid_profiles.csv into the OkC_Classifier/data/ directory. This is the 
 filepath expected for the scripts.
 
+Notes:
+1) All code uses python version 3.10.8
+2) This is a demo-project, all code is free to use in anyway. 
+3) This is a "rough and dirty" project, many other aspects must be considered
+    when builing in production environments or on teams to foster team
+    producitively (e.g. linting, proper comments).
 
-Projects:
-1) Build a data set pre-processor:
-    The goal of the project is get familiar with the dataset as well as to
-    clean up the various rows for more traditional data science type work.
+
+
