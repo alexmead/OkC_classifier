@@ -35,6 +35,7 @@ df['religion'] = df['religion'].map(parse_religion_type) # override existing fie
 ####################################################################################################################################
 # Process the indenpendant variables 
 # Begin to organize the data and perform true categorical preprocessing
+target = 'sex'
 num_features = [
         # 'age', 
         'height', 
@@ -62,19 +63,17 @@ cat_features = [
     ] # categorical features
 features = num_features + cat_features
 # Remove unused column
-cols = list(set(list(df.columns)) - set(features))
+cols = list(set(list(df.columns)) - (set(features) | set([target])))
 df.drop(cols, axis=1, inplace=True)
 
 ##############################
-# # Temp code to try one-hot-encoding 'manually'
+# One-Hot-Encoding 'manually'
 df = pd.get_dummies(df, columns=['body_type']) 
 df.drop('body_type_average', axis=1, inplace=True) # drugs=never is base case
 
-# # Expanding temp code to try and use standard pd.DataFrame
+# Encoding the data to be put into a Deep Neural Network (DNN):
+# I'm not entirely sure on this step beyond a data typing issue.
 from sklearn.preprocessing import LabelEncoder
-# l_enc = LabelEncoder()
-# gender = l_enc.fit_transform(gender)
-
 
 nunique = df.nunique()
 types = df.dtypes
@@ -103,37 +102,13 @@ gender = df.sex
 df.drop(['sex'], axis=1, inplace=True)
 ##################################################################
 
-###############
-# # The Following one-hot-encoding methods are acting as I suppose they would. 
-# #   As such, I will reply on the older method from earlier, .get_dummies(), and droping columns "by-hand".
-# # One-Hot Encoding for the categorical variables
-# from sklearn.pipeline import Pipeline
-# from sklearn.preprocessing import OneHotEncoder
-# from sklearn.compose import ColumnTransformer
-# # NOTE: No transformation needed for numerical value columns: All are present 
-# # Build transformer for the categorical variables
-# cat_transformer = Pipeline(
-#     steps=[
-#         ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False)),
-#     ]
-# )
-# preprocessor = ColumnTransformer(
-#     transformers=[
-#         ('cat', cat_transformer, cat_features),
-#     ]
-# )
 
-# # Perform the preprocess for the categorical variable One-Hot Encoding
-# preprocessor.fit(df)
-# df2 = preprocessor.transform(df)
-###############
 ####################################################################################################################################
 ####################################################################################################################################
 
 ##################################################################
 # create training, test data partitions
 from sklearn.model_selection import train_test_split
-# X_train, X_test, y_train, y_test = train_test_split(df2, gender, test_size=0.2, stratify=gender, random_state=1)
 X_train, X_test, y_train, y_test = train_test_split(df, gender, test_size=0.2, stratify=gender, random_state=1)
 ##################################################################
 
@@ -143,25 +118,17 @@ X_train, X_test, y_train, y_test = train_test_split(df, gender, test_size=0.2, s
 from src.utils import print_score
 score=[]
 
-# from sklearn.ensemble import RandomForestClassifier
-# from xgboost import XGBClassifier
 from sklearn.linear_model import LogisticRegression
-# import lightgbm as lgb
 
 # Training of multiple model in parallel, I think to compare performance.
 log_clf = LogisticRegression(
     max_iter=200, # org=100
-) # Classic logistic regression: 
-# rnd_clf = RandomForestClassifier()
-# xgb_clf = XGBClassifier()
-# lgb_clf = lgb.LGBMClassifier()
-
+    random_state=16
+) 
 
 # Train each model:
-# for clf in (log_clf, rnd_clf, lgb_clf, xgb_clf): # Original code that includes 4 model types
-for clf in (log_clf, ):
-    clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
+log_clf.fit(X_train, y_train)
+y_pred = log_clf.predict(X_test)
 
 
 # Print results to screen for evaluation: 
@@ -184,19 +151,6 @@ clf= TabNetClassifier(optimizer_fn=torch.optim.Adam,
 
 # fit the model 
 clf.fit(
-    X_train,y_train,
-    eval_set=[(X_train, y_train), (X_test, y_test)],
-    eval_name=['train', 'test'],
-    eval_metric=['auc','balanced_accuracy'],
-    max_epochs=200, patience=60,
-    batch_size=512, virtual_batch_size=512,
-    num_workers=0,
-    weights=1,
-    drop_last=False
-)   
-
-# For dataframes
-clf.fit(
     X_train.values,y_train,
     eval_set=[(X_train.values, y_train), (X_test.values, y_test)],
     eval_name=['train', 'test'],
@@ -211,9 +165,23 @@ clf.fit(
 
 from sklearn.metrics import classification_report
 y_pred=clf.predict(X_test.values)
-print(classification_report(y_test, y_pred))
+print(classification_report(y_test, y_pred, target_names=['male', 'female']))
+
+correct_pred = (y_pred==y_test).sum().item()
+accuracy = correct_pred / len(y_test) * 100
+print(f"Accuracy: {accuracy:.2f}%")
+
 ##################################################################
+# Bundle up the logistic regression, and others if we did those...
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
 
+log_test_score = round(accuracy_score(y_test, log_clf.predict(X_test)) * 100,2)
+log_accuracies = cross_val_score(estimator = log_clf, X = X_train, y = y_train, cv = 10)
+log_train_score=round(log_accuracies.mean()*100,2)
 
+results_df = pd.DataFrame(data=[["Logistic Regression", log_train_score, log_test_score],],
+                          columns=['Model', 'Training Accuracy %', 'Testing Accuracy %'])
 
-
+results_df.index += 1 
+results_df
