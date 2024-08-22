@@ -85,7 +85,6 @@ for col in df.columns:
 
 ##################################################################
 # Extract observed, predicted (independant, dependant) variables
-# gender = df.sex.values
 gender = df.sex
 df.drop(['sex'], axis=1, inplace=True)
 ##################################################################
@@ -97,29 +96,6 @@ df.drop(['sex'], axis=1, inplace=True)
 # create training, test data partitions
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(df, gender, test_size=0.2, stratify=gender, random_state=1)
-##################################################################
-
-##################################################################
-# The Fun Part: Let's explore the actual modeling=
-from src.utils import print_score
-score=[]
-
-from sklearn.linear_model import LogisticRegression
-
-# Training of multiple model in parallel, I think to compare performance.
-log_clf = LogisticRegression(
-    max_iter=200, # org=100
-    random_state=16
-) 
-
-# Train each model:
-log_clf.fit(X_train, y_train)
-y_pred = log_clf.predict(X_test)
-
-# Print results to screen for evaluation: 
-print_score(log_clf, X_train, y_train, X_test, y_test, score, train=True)
-print_score(log_clf, X_train, y_train, X_test, y_test, score, train=False)
-
 ##################################################################
 
 ##################################################################
