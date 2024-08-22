@@ -20,6 +20,14 @@ essay_cols = ['essay'+str(num) for num in range(0,10)]
 df = df.drop(essay_cols, axis=1)
 df = df.dropna() # Start simple, just drop all non-complete rows'
 ##################################################################
+
+##################################################################
+# A nice little preprocess of the data type: religion
+from src.utils import parse_religion_importance, parse_religion_type
+df['religious_importance'] = df['religion'].map(parse_religion_importance)
+df['religion'] = df['religion'].map(parse_religion_type) # override existing field 
+##################################################################
+
 # Observed variables
 obs_cols = [
     # 'age', 
@@ -38,6 +46,7 @@ obs_cols = [
     # 'orientation', 
     # 'pets', 
     # 'religion', # Perhaps this is a place to explore variable "augmentation". This is really two variables (relgion, importance)
+    'religious_importance',
     # 'sign', 
     # 'smokes', 
     # 'status'
@@ -82,6 +91,17 @@ if 'orientation' in obs_cols:
 if 'pets' in obs_cols:
     X = pd.get_dummies(X, columns=['pets']) 
     X.drop("pets_dislikes dogs and dislikes cats", axis=1, inplace=True) # drugs=never is base case
+
+# religion
+if 'religion' in obs_cols:
+    X = pd.get_dummies(X, columns=['religion']) 
+    X.drop("religion_other", axis=1, inplace=True) # religion=religion_other is base case
+
+# religion_importance
+if 'religious_importance' in obs_cols:
+    X = pd.get_dummies(X, columns=['religious_importance']) 
+    X.drop("religious_importance_not too serious about it", axis=1, inplace=True) # religion=religion_other is base case
+
 
 # smokes
 if 'smokes' in obs_cols:
