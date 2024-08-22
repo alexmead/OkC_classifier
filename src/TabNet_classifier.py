@@ -3,11 +3,9 @@ Author: Alex R. Mead
 Date: August 2024
 
 Description:
-Further exploring classification with tabular and an unstructured
-data related to the OkCupid Profiles dataset. 
-
-This is a "learn burn" file which will be reformated for the 
-Substack post.
+Further exploring classification with tabular data related to 
+the OkCupid Profiles dataset. Here, we use a Deep Learning
+approach which is available as part of the TabNet module.
 
 """
 
@@ -22,14 +20,6 @@ df = df.drop(essay_cols, axis=1)
 df = df.dropna() # Start simple, just drop all non-complete rows'
 # Note: Much thought can be put into data "backfilling".
 ##################################################################
-
-##################################################################
-# A nice little preprocess of the data type: religion
-from src.utils import parse_religion_importance, parse_religion_type
-df['religious_importance'] = df['religion'].map(parse_religion_importance)
-df['religion'] = df['religion'].map(parse_religion_type) # override existing field 
-##################################################################
-
 
 ####################################################################################################################################
 ####################################################################################################################################
@@ -90,9 +80,7 @@ for col in df.columns:
         categorical_dims[col] = len(l_enc.classes_)
     else:
         pass
-        # df.fillna(df.loc[train_indices, col].mean(), inplace=True)
-
-
+        
 ##############################
 
 ##################################################################
@@ -102,7 +90,6 @@ gender = df.sex
 df.drop(['sex'], axis=1, inplace=True)
 ##################################################################
 
-
 ####################################################################################################################################
 ####################################################################################################################################
 
@@ -111,7 +98,6 @@ df.drop(['sex'], axis=1, inplace=True)
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(df, gender, test_size=0.2, stratify=gender, random_state=1)
 ##################################################################
-
 
 ##################################################################
 # The Fun Part: Let's explore the actual modeling=
@@ -129,7 +115,6 @@ log_clf = LogisticRegression(
 # Train each model:
 log_clf.fit(X_train, y_train)
 y_pred = log_clf.predict(X_test)
-
 
 # Print results to screen for evaluation: 
 print_score(log_clf, X_train, y_train, X_test, y_test, score, train=True)
@@ -162,7 +147,6 @@ clf.fit(
     drop_last=False
 )   
 
-
 from sklearn.metrics import classification_report
 y_pred=clf.predict(X_test.values)
 print(classification_report(y_test, y_pred, target_names=['male', 'female']))
@@ -171,17 +155,4 @@ correct_pred = (y_pred==y_test).sum().item()
 accuracy = correct_pred / len(y_test) * 100
 print(f"Accuracy: {accuracy:.2f}%")
 
-##################################################################
-# Bundle up the logistic regression, and others if we did those...
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import cross_val_score
 
-log_test_score = round(accuracy_score(y_test, log_clf.predict(X_test)) * 100,2)
-log_accuracies = cross_val_score(estimator = log_clf, X = X_train, y = y_train, cv = 10)
-log_train_score=round(log_accuracies.mean()*100,2)
-
-results_df = pd.DataFrame(data=[["Logistic Regression", log_train_score, log_test_score],],
-                          columns=['Model', 'Training Accuracy %', 'Testing Accuracy %'])
-
-results_df.index += 1 
-results_df

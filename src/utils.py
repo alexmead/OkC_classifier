@@ -73,3 +73,32 @@ def print_score(clf, X_train, y_train, X_test, y_test, score, train=True):
          print(f"CLASSIFICATION REPORT:\n{clf_report}")
          print("_______________________________________________")
          print(f"Confusion Matrix: \n {confusion_matrix(y_test, pred)}\n")
+         return f"{accuracy_score(y_test, pred) * 100:.2f}"
+
+def get_accuracy(clf, X_train, y_test, type='float'):
+    """Function to return the accuracy of the trained model."""
+    pred = clf.predict(X_train)
+    acc_str = f"{accuracy_score(y_test, pred) * 100:.2f}" # use this weird string thing to get 2 decimals is all.
+    type_casted = None
+    match type:
+        case 'float':
+            type_casted = float(acc_str)
+        case 'string':
+            type_casted = str(acc_str)
+        case 'integer':
+            type_casted = int(acc_str)
+    return type_casted
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+def plot_execution_times_histogram(execution_times):
+    # Define the bins, rounded to 1 decimal place width
+    bins = np.arange(min(execution_times), max(execution_times) + 0.1, 0.1)
+    # Plot histogram
+    plt.hist(execution_times, bins=bins, edgecolor='black', density=False)  # density=True for PDF
+    plt.xlabel('Model Prediction Accuracy [%]')
+    plt.ylabel('Number of Occurances')
+    plt.title('Histogram of Model Accuracy')
+    plt.show()
