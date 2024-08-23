@@ -95,7 +95,7 @@ df.drop(['sex'], axis=1, inplace=True)
 ##################################################################
 # create training, test data partitions
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(df, gender, test_size=0.2, stratify=gender, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(df, gender, test_size=0.2, stratify=gender, random_state=16)
 ##################################################################
 
 ##################################################################
@@ -132,3 +132,10 @@ accuracy = correct_pred / len(y_test) * 100
 print(f"Accuracy: {accuracy:.2f}%")
 
 
+from sklearn import metrics
+cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
+cnf_matrix
+
+from sklearn.metrics import classification_report
+target_names = ['female', 'male']
+print(classification_report(y_test, y_pred, target_names=target_names))

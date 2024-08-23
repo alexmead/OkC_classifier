@@ -3,11 +3,11 @@ Author: Alex R. Mead
 Date: August 2024
 
 Description:
-Further exploring classification with tabular and an unstructured
-data related to the OkCupid Profiles dataset. 
-
-This is a "learn burn" file which will be reformated for the 
-Substack post.
+Noticing the Logistic Regression and Deep Learning approach both 
+perform about the same after a single training cycle, here we 
+explore the nature of each approach with a statistical analysis
+to see if in fact the Deep Learning approach does better, or if 
+it is mearly a "fluke" of the data. 
 
 """
 

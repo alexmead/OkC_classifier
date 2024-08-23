@@ -75,9 +75,9 @@ def print_score(clf, X_train, y_train, X_test, y_test, score, train=True):
          print(f"Confusion Matrix: \n {confusion_matrix(y_test, pred)}\n")
          return f"{accuracy_score(y_test, pred) * 100:.2f}"
 
-def get_accuracy(clf, X_train, y_test, type='float'):
+def get_accuracy(clf, X_test, y_test, type='float'):
     """Function to return the accuracy of the trained model."""
-    pred = clf.predict(X_train)
+    pred = clf.predict(X_test)
     acc_str = f"{accuracy_score(y_test, pred) * 100:.2f}" # use this weird string thing to get 2 decimals is all.
     type_casted = None
     match type:
