@@ -51,7 +51,7 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.model_selection import cross_val_score
 
-def print_score(clf, X_train, y_train, X_test, y_test, score, train=True):
+def print_score(clf, X_train, y_train, X_test, y_test, score, _train=True):
      """Taken from kaggle: https://www.kaggle.com/code/enigmak/tabnet-deep-neural-network-for-tabular-data"""
      if train:
         pred = clf.predict(X_train)
@@ -75,7 +75,7 @@ def print_score(clf, X_train, y_train, X_test, y_test, score, train=True):
          print(f"Confusion Matrix: \n {confusion_matrix(y_test, pred)}\n")
          return f"{accuracy_score(y_test, pred) * 100:.2f}"
 
-def get_accuracy(clf, X_test, y_test, type='float'):
+def get_accuracy(clf, X_test, y_test,type='float'):
     """Function to return the accuracy of the trained model."""
     pred = clf.predict(X_test)
     acc_str = f"{accuracy_score(y_test, pred) * 100:.2f}" # use this weird string thing to get 2 decimals is all.

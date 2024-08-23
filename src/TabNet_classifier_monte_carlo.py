@@ -24,9 +24,9 @@ df = df.dropna() # Start simple, just drop all non-complete rows'
 
 ##################################################################
 # A nice little preprocess of the data type: religion
-from src.utils import parse_religion_importance, parse_religion_type
-df['religious_importance'] = df['religion'].map(parse_religion_importance)
-df['religion'] = df['religion'].map(parse_religion_type) # override existing field 
+# from src.utils import parse_religion_importance, parse_religion_type
+# df['religious_importance'] = df['religion'].map(parse_religion_importance)
+# df['religion'] = df['religion'].map(parse_religion_type) # override existing field 
 
 ##################################################################
 # Process the indenpendant variables 
@@ -137,7 +137,7 @@ import torch
 
 results = []
 train_time = []
-total_rounds = 100
+total_rounds = 1000
 for i in range(0, total_rounds):
     t0 = int(time.time() * 1_000_000)
     # Notice, resample for each round.
