@@ -127,7 +127,7 @@ for i in range(0, total_rounds):
 
 
 plot_execution_times_histogram(results)
-f = open('data/log_data.dat', 'w'); f.write(str(results)); f.close()
+f = open('log_data.dat', 'w'); f.write(str(results)); f.close()
 ##################################################################
 
 ##################################################################
@@ -164,7 +164,7 @@ for i in range(0, total_rounds):
     # Store iterations results for post analysis. 
     results.append(get_accuracy(clf, X_test.values, y_test, type='float'))
     train_time.append(int(time.time() * 1_000_000) - t0)
-    f = open('data/tabNet_data.dat', 'w'); f.write(str(results)); f.close()
+    f = open('tabNet_data.dat', 'w'); f.write(str(results)); f.close()
     print(f"Making progress: {i} / ")
 
 
