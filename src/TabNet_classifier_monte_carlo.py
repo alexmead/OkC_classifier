@@ -127,7 +127,7 @@ for i in range(0, total_rounds):
 
 
 plot_execution_times_histogram(results)
-f = open('log_data.dat', 'w'); f.write(str(results)); f.close()
+f = open('data/log_data.dat', 'w'); f.write(str(results)); f.close()
 ##################################################################
 
 ##################################################################
@@ -164,27 +164,12 @@ for i in range(0, total_rounds):
     # Store iterations results for post analysis. 
     results.append(get_accuracy(clf, X_test.values, y_test, type='float'))
     train_time.append(int(time.time() * 1_000_000) - t0)
-    f = open('tabNet_data.dat', 'w'); f.write(str(results)); f.close()
+    f = open('data/tabNet_data.dat', 'w'); f.write(str(results)); f.close()
     print(f"Making progress: {i} / ")
 
 
 plot_execution_times_histogram(results)
 
-
-##################################################################
-# Bundle up the logistic regression, and others if we did those...
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import cross_val_score
-
-log_test_score = round(accuracy_score(y_test, log_clf.predict(X_test)) * 100,2)
-log_accuracies = cross_val_score(estimator = log_clf, X = X_train, y = y_train, cv = 10)
-log_train_score=round(log_accuracies.mean()*100,2)
-
-results_df = pd.DataFrame(data=[["Logistic Regression", log_train_score, log_test_score],],
-                          columns=['Model', 'Training Accuracy %', 'Testing Accuracy %'])
-
-results_df.index += 1 
-results_df
 
 
 
