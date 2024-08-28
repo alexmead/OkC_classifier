@@ -72,6 +72,45 @@ class SimpleNN(nn.Module):
         x = self.fc4(x)
         return x
 
-
 # Initialize the neural network
 model = SimpleNN()
+
+# 3: Train the model
+# Define the loss function and optimizer
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# Training loop
+num_epochs = 20
+for epoch in range(num_epochs):
+    model.train()
+    running_loss = 0.0
+    for inputs, labels in train_loader:
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item()
+
+    print(f'Epoch {epoch + 1}, Loss: {running_loss / len(train_loader)}')
+
+# 4: Evaluate the classifier on testing data
+model.eval()
+all_preds = []
+all_labels = []
+with torch.no_grad():
+    for inputs, labels in test_loader:
+        outputs = model(inputs)
+        _, preds = torch.max(outputs, 1)
+        all_preds.extend(preds.numpy())
+        all_labels.extend(labels.numpy())
+
+# Calculate accuracy and classification report
+accuracy = accuracy_score(all_labels, all_preds)
+report = classification_report(all_labels, all_preds)
+print(f'Accuracy: {accuracy}')
+print(report)
+
+
+
