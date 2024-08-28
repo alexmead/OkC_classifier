@@ -1,4 +1,5 @@
 matplotlib==3.9.2
 pandas==2.2.2
 pytorch-tabnet==4.1.0
+requests
 scikit-learn==1.5.1
